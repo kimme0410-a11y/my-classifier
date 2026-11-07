@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>민원 분류기</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>민원 분류기</h1>
+    <p class="hint">AI(Gemini)가 가릅니다. AI가 답하지 못하면 규칙으로 가릅니다.</p>
+
+    <div id="error" class="error" role="alert" hidden></div>
+
+    <div class="tabs" role="tablist">
+      <button id="tab-classify" role="tab" aria-selected="true">분류</button>
+      <button id="tab-grade" role="tab" aria-selected="false">채점</button>
+    </div>
+
+    <section id="panel-classify">
+      <label for="input">민원 문장 한 줄</label>
+      <textarea id="input" rows="3" placeholder="예) 청구한 지 3주가 지났는데 보험금이 아직 입금되지 않았습니다."></textarea>
+      <button id="go" class="primary" disabled>분류</button>
+      <div id="result" class="result" aria-live="polite"></div>
+    </section>
+
+    <section id="panel-grade" hidden>
+      <button id="grade-go" class="primary" disabled>규칙으로 채점</button>
+      <button id="grade-ai-go" class="primary" disabled>AI로 채점</button>
+      <div id="grade-result" class="result" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="mask.js"></script>
+  <script src="rules.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

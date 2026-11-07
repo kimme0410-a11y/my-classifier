@@ -1,0 +1,125 @@
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", "Malgun Gothic", sans-serif;
+  background: #f5f6f8;
+  color: #1c1f24;
+  line-height: 1.5;
+}
+
+main {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+h1 { font-size: 1.3rem; margin: 0 0 4px; }
+h2 { font-size: 1rem; margin: 20px 0 8px; }
+
+.hint { color: #5b626b; font-size: 0.9rem; margin: 4px 0 12px; }
+
+.error {
+  background: #fdecec;
+  color: #8a1c1c;
+  border: 1px solid #f0b7b7;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+
+.tabs { display: flex; gap: 4px; margin-bottom: 12px; }
+.tabs button {
+  flex: 1;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #c9ced6;
+  background: #fff;
+  border-radius: 8px;
+}
+.tabs button[aria-selected="true"] {
+  background: #1f4fd8;
+  border-color: #1f4fd8;
+  color: #fff;
+}
+
+label { display: block; font-weight: 600; margin-bottom: 6px; }
+
+textarea {
+  width: 100%;
+  font: inherit;
+  padding: 10px;
+  border: 1px solid #c9ced6;
+  border-radius: 8px;
+  resize: vertical;
+}
+
+button.primary {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background: #1f4fd8;
+  border: 0;
+  border-radius: 8px;
+}
+button.primary:disabled { background: #9aa6c9; }
+
+.result { margin-top: 16px; }
+
+.notice {
+  background: #fff4d6;
+  color: #6b4b00;
+  border: 1px solid #f0d58a;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+
+button.secondary {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  font-size: 0.95rem;
+  color: #1f4fd8;
+  background: #fff;
+  border: 1px solid #1f4fd8;
+  border-radius: 8px;
+}
+
+table.compare {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+table.compare th, table.compare td { padding: 8px 4px; border-bottom: 1px solid #e3e6eb; }
+
+.row {
+  display: flex;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #e3e6eb;
+}
+.row .label { flex: 0 0 5.5em; color: #5b626b; font-size: 0.9rem; }
+.row .value { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+
+.summary { background: #fff; border-radius: 8px; padding: 4px 12px; }
+
+ul.wrong { list-style: none; margin: 0; padding: 0; }
+ul.wrong li {
+  background: #fff;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+.sentence { overflow-wrap: anywhere; margin-bottom: 6px; }
+.diff { font-size: 0.85rem; color: #8a1c1c; overflow-wrap: anywhere; }
