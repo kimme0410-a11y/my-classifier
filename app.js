@@ -52,9 +52,78 @@
 
   // ---- 탭 ----
   function selectTab(name) {
-    ["classify", "grade"].forEach(function (n) {
+    ["classify", "grade", "history"].forEach(function (n) {
       $("tab-" + n).setAttribute("aria-selected", n === name ? "true" : "false");
       $("panel-" + n).hidden = n !== name;
+    });
+    if (name === "history") renderHistory();
+  }
+
+  // ---- 내역 (이 브라우저의 localStorage 에만 둔다. 가린 문장만 저장) ----
+  var HKEY = "my-classifier.history.v1", hfilter = "all";
+
+  function loadHistory() {
+    try { return JSON.parse(localStorage.getItem(HKEY)) || []; } catch (e) { return []; }
+  }
+  function saveHistory(list) {
+    try { localStorage.setItem(HKEY, JSON.stringify(list.slice(0, 200))); } catch (e) { /* 저장 불가여도 화면은 동작 */ }
+  }
+  function addHistory(masked, r, source) {
+    var list = loadHistory();
+    list.unshift({ id: Date.now() + "-" + Math.random().toString(36).slice(2, 6), t: Date.now(), text: masked,
+      kan: r["칸"], lv: r["긴급도"], why: r["이유"], src: source, done: false });
+    saveHistory(list);
+    updateBadge(list);
+  }
+  function updateBadge(list) {
+    var open = list.filter(function (x) { return !x.done; }).length;
+    var b = $("hist-badge");
+    b.textContent = open;
+    b.hidden = open === 0;
+  }
+  function fmtTime(t) {
+    var d = new Date(t), p = function (n) { return (n < 10 ? "0" : "") + n; };
+    return (d.getMonth() + 1) + "/" + d.getDate() + " " + p(d.getHours()) + ":" + p(d.getMinutes());
+  }
+  function renderHistory() {
+    var list = loadHistory();
+    var open = list.filter(function (x) { return !x.done; }).length;
+    $("n-all").textContent = list.length;
+    $("n-open").textContent = open;
+    $("n-done").textContent = list.length - open;
+    updateBadge(list);
+    var ul = $("hist-list");
+    ul.textContent = "";
+    var shown = list.filter(function (x) { return hfilter === "all" || (hfilter === "done") === x.done; });
+    if (!shown.length) {
+      ul.appendChild(el("li", "hist-empty", list.length ? "이 조건에 맞는 내역이 없습니다." : "아직 질문한 내역이 없습니다. 분류 탭에서 민원을 넣어 보세요."));
+      return;
+    }
+    shown.forEach(function (x) {
+      var li = el("li", "hist-item" + (x.done ? " is-done" : ""));
+      var top = el("div", "hist-top");
+      top.appendChild(el("span", "status " + (x.done ? "done" : "open"), x.done ? "처리완료" : "미처리"));
+      top.appendChild(el("span", "hist-time", fmtTime(x.t) + (x.src ? " · " + x.src : "")));
+      li.appendChild(top);
+      li.appendChild(el("p", "hist-text", x.text));
+      li.appendChild(el("p", "hist-meta", x.kan + " · 긴급도 " + x.lv + " — " + x.why));
+      var act = el("div", "hist-act");
+      var tg = el("button", "secondary inline", x.done ? "미처리로 되돌리기" : "처리완료로 표시");
+      tg.addEventListener("click", function () {
+        var all = loadHistory();
+        all.forEach(function (y) { if (y.id === x.id) y.done = !y.done; });
+        saveHistory(all);
+        renderHistory();
+      });
+      var rm = el("button", "link-btn", "삭제");
+      rm.addEventListener("click", function () {
+        saveHistory(loadHistory().filter(function (y) { return y.id !== x.id; }));
+        renderHistory();
+      });
+      act.appendChild(tg);
+      act.appendChild(rm);
+      li.appendChild(act);
+      ul.appendChild(li);
     });
   }
 
@@ -77,7 +146,8 @@
       addRow(out, "칸", r["칸"]);
       addRow(out, "긴급도", r["긴급도"]);
       addRow(out, "이유", r["이유"]);
-      out.appendChild(el("p", "hint", "AI(" + data["모델"] + ")가 갈랐습니다."));
+      out.appendChild(el("p", "hint", "AI(" + data["모델"] + ")가 갈랐습니다. 내역 탭에 담겼습니다."));
+      addHistory(masked, r, "AI");
     }).catch(function (e) {
       var rr = window.classifyByRules(masked, criteria, keywords);
       out.textContent = "";
@@ -87,6 +157,7 @@
       addRow(out, "긴급도", rr["긴급도"]);
       addRow(out, "이유", rr["이유"]);
       out.appendChild(el("p", "hint", "AI가 답하지 못한 까닭: " + e.message));
+      addHistory(masked, rr, "규칙");
     }).then(function () { $("go").disabled = false; });
   }
 
@@ -300,6 +371,23 @@
   function init() {
     $("tab-classify").addEventListener("click", function () { selectTab("classify"); });
     $("tab-grade").addEventListener("click", function () { selectTab("grade"); });
+    $("tab-history").addEventListener("click", function () { selectTab("history"); });
+    $("hist-filter").addEventListener("click", function (ev) {
+      var f = ev.target.closest("button[data-f]");
+      if (!f) return;
+      hfilter = f.getAttribute("data-f");
+      Array.prototype.forEach.call($("hist-filter").querySelectorAll("button"), function (b) {
+        b.setAttribute("aria-selected", b === f ? "true" : "false");
+      });
+      renderHistory();
+    });
+    $("hist-clear").addEventListener("click", function () {
+      if (loadHistory().length && window.confirm("내역을 모두 지울까요? 되돌릴 수 없습니다.")) {
+        saveHistory([]);
+        renderHistory();
+      }
+    });
+    updateBadge(loadHistory());
     $("go").addEventListener("click", onClassify);
     $("grade-go").addEventListener("click", onGrade);
     $("grade-ai-go").addEventListener("click", onGradeAI);

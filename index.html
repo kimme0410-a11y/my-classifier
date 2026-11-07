@@ -20,6 +20,7 @@
       <div class="segmented" role="tablist">
         <button id="tab-classify" role="tab" aria-selected="true">분류</button>
         <button id="tab-grade" role="tab" aria-selected="false">채점</button>
+        <button id="tab-history" role="tab" aria-selected="false">내역 <span id="hist-badge" class="count" hidden></span></button>
       </div>
     </div>
 
@@ -73,6 +74,21 @@
           <div id="grade-result" class="result" aria-live="polite" data-empty-title="채점 결과가 이곳에 표시됩니다." data-empty-sub="왼쪽에서 채점 방식을 골라 주세요."></div>
         </div>
       </div>
+    </section>
+
+    <!-- 내역 -->
+    <section id="panel-history" class="history" hidden>
+      <h2 class="step"><span>03</span>질문 내역 · 처리 현황</h2>
+      <p class="practice"><span class="badge">내 브라우저에만 저장</span>가린 문장만 이 브라우저에 남습니다. 서버로는 보내지 않습니다.</p>
+      <div class="hist-bar">
+        <div class="segmented" role="tablist" id="hist-filter">
+          <button data-f="all" aria-selected="true">전체 <b id="n-all">0</b></button>
+          <button data-f="open" aria-selected="false">미처리 <b id="n-open">0</b></button>
+          <button data-f="done" aria-selected="false">처리완료 <b id="n-done">0</b></button>
+        </div>
+        <button id="hist-clear" class="secondary inline">내역 모두 지우기</button>
+      </div>
+      <ul id="hist-list" class="hist-list"></ul>
     </section>
 
     <footer>MY-CLASSIFIER · 보험 고객 민원 분류기 · 입력한 문장은 저장하지 않습니다</footer>
