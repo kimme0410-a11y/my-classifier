@@ -8,28 +8,74 @@
 </head>
 <body>
   <main>
-    <h1>민원 분류기</h1>
-    <p class="hint">AI(Gemini)가 가릅니다. AI가 답하지 못하면 규칙으로 가릅니다.</p>
+    <header class="hero">
+      <h1>민원 한 줄이면, 갈 곳이 보입니다.</h1>
+      <p>보험 고객 민원 문장을 넣으면 칸 · 긴급도 · 이유를 알려 드립니다. AI(Gemini)가 가르고, AI가 답하지 못하면 규칙으로 가릅니다.</p>
+    </header>
 
     <div id="error" class="error" role="alert" hidden></div>
 
-    <div class="tabs" role="tablist">
-      <button id="tab-classify" role="tab" aria-selected="true">분류</button>
-      <button id="tab-grade" role="tab" aria-selected="false">채점</button>
+    <div class="mode">
+      <span class="mode-label">보기</span>
+      <div class="segmented" role="tablist">
+        <button id="tab-classify" role="tab" aria-selected="true">분류</button>
+        <button id="tab-grade" role="tab" aria-selected="false">채점</button>
+      </div>
     </div>
 
-    <section id="panel-classify">
-      <label for="input">민원 문장 한 줄</label>
-      <textarea id="input" rows="3" placeholder="예) 청구한 지 3주가 지났는데 보험금이 아직 입금되지 않았습니다."></textarea>
-      <button id="go" class="primary" disabled>분류</button>
-      <div id="result" class="result" aria-live="polite"></div>
+    <!-- 분류 -->
+    <section id="panel-classify" class="grid">
+      <div class="col">
+        <h2 class="step"><span>01</span>민원 입력</h2>
+
+        <details class="guide">
+          <summary>어떤 칸으로 나뉘나요?</summary>
+          <ol id="kan-guide"></ol>
+        </details>
+
+        <p class="practice"><span class="badge">실습용</span>실습용 서비스입니다. 실제 민원은 접수되지 않으므로 가상 사례만 입력해 주세요.</p>
+
+        <div class="card input-card">
+          <label for="input" class="sr-only">민원 문장 한 줄</label>
+          <textarea id="input" rows="7" placeholder="예) 청구한 지 3주가 지났는데 보험금이 아직 입금되지 않았습니다."></textarea>
+          <div class="input-foot">
+            <span class="privacy">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.5 12l2.5 2.5 4.5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              이름·전화번호 등은 가린 뒤 AI로 보냅니다
+            </span>
+            <button id="go" class="primary" disabled>분류하기</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <h2 class="step"><span>02</span>분류 결과</h2>
+        <div class="card result-card">
+          <div id="result" class="result" aria-live="polite" data-empty-title="민원을 넣으면 이곳에 분류 결과가 표시됩니다." data-empty-sub="문장을 쓴 뒤 '분류하기'를 눌러 주세요."></div>
+        </div>
+      </div>
     </section>
 
-    <section id="panel-grade" hidden>
-      <button id="grade-go" class="primary" disabled>규칙으로 채점</button>
-      <button id="grade-ai-go" class="primary" disabled>AI로 채점</button>
-      <div id="grade-result" class="result" aria-live="polite"></div>
+    <!-- 채점 -->
+    <section id="panel-grade" class="grid" hidden>
+      <div class="col">
+        <h2 class="step"><span>01</span>채점하기</h2>
+        <div class="card">
+          <p class="card-text">직접 정답을 붙인 30개 문장으로 규칙과 AI를 채점합니다. 문장은 가린 뒤 보냅니다.</p>
+          <button id="grade-go" class="primary block" disabled>규칙으로 채점</button>
+          <button id="grade-ai-go" class="primary block" disabled>AI로 채점</button>
+        </div>
+      </div>
+
+      <div class="col">
+        <h2 class="step"><span>02</span>채점 결과</h2>
+        <div class="card result-card">
+          <div id="grade-result" class="result" aria-live="polite" data-empty-title="채점 결과가 이곳에 표시됩니다." data-empty-sub="왼쪽에서 채점 방식을 골라 주세요."></div>
+        </div>
+      </div>
     </section>
+
+    <footer>MY-CLASSIFIER · 보험 고객 민원 분류기 · 입력한 문장은 저장하지 않습니다</footer>
   </main>
 
   <script src="mask.js"></script>

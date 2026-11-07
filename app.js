@@ -307,6 +307,15 @@
     Promise.all([loadJSON("criteria.json"), loadJSON("keywords.json")]).then(function (v) {
       criteria = v[0];
       keywords = v[1];
+      // «어떤 칸으로 나뉘나요?» — criteria.json 에서 칸 이름과 뜻을 읽어 채운다
+      var guide = $("kan-guide");
+      criteria["칸"].forEach(function (k) {
+        var li = el("li");
+        li.appendChild(el("b", null, k["이름"]));
+        li.appendChild(document.createTextNode(" — " + k["뜻"]));
+        guide.appendChild(li);
+      });
+      guide.parentNode.appendChild(el("p", "hint", "두 칸에 걸치면 위 순서에서 앞 칸으로 가릅니다."));
       $("go").disabled = false;
       setGradeButtons(false);
     }).catch(function (e) {
